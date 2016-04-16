@@ -8,7 +8,8 @@ import (
 )
 
 type PackageChecker struct {
-	filePath string
+	filePath            string
+	bodyPatternIncluded bool
 }
 
 func (checker *PackageChecker) eval() bool {
@@ -19,6 +20,19 @@ func (checker *PackageChecker) eval() bool {
 	}
 	defer file.Close()
 
+	if !checker.evalFile(file) {
+		return false
+	}
+
+	if *bodyPattern != "" && !checker.bodyPatternIncluded {
+		fmt.Printf("Text `%s` not included in body.\n", *bodyPattern)
+		return false
+	}
+
+	return true
+}
+
+func (checker *PackageChecker) evalFile(file *os.File) bool {
 	scanner := bufio.NewScanner(file)
 	line := 0
 	for scanner.Scan() {
@@ -36,7 +50,11 @@ func (checker *PackageChecker) eval() bool {
 			return false
 		}
 
-		line += 1
+		if strings.Contains(text, *bodyPattern) {
+			checker.bodyPatternIncluded = true
+		}
+
+		line++
 	}
 
 	return true

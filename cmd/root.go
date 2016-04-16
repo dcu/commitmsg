@@ -72,9 +72,9 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 
-	emailDomain = RootCmd.Flags().StringP("email", "e", "", "Required domain of the author")
-	bodyPattern = RootCmd.Flags().StringP("body", "b", "", "Required word in the body of the commit")
-	titleLength = RootCmd.Flags().IntP("title-length", "l", 52, "Maximum length of the title")
+	emailDomain = RootCmd.PersistentFlags().StringP("email", "e", "", "Required domain of the author")
+	bodyPattern = RootCmd.PersistentFlags().StringP("body", "b", "", "Required word in the body of the commit")
+	titleLength = RootCmd.PersistentFlags().IntP("title-length", "l", 52, "Maximum length of the title")
 	titleCapitalized = RootCmd.Flags().BoolP("title-capitalized", "c", true, "Whether the title should be capitalized or not")
 }
 
