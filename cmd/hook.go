@@ -21,30 +21,33 @@
 package cmd
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var (
-	emailDomain      *string
-	bodyPattern      *string
-	titleLenght      *int
-	titleCapitalized *bool
-)
-
 // hookCmd represents the hook command
 var hookCmd = &cobra.Command{
-	Use:   "hook",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:   "hook <commit-msg-file>",
+	Short: "Run the checker in hook mode",
+	Long: `Run this command from the commit-msg hook. Like this:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+#!/bin/bash
+commitmsg hook $@
+
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hook called")
+		var filePath string
+		if len(args) == 0 {
+			filePath = ".git/COMMIT_EDITMSG"
+		} else {
+			filePath = args[0]
+		}
+
+		checker := &PackageChecker{filePath: filePath}
+		if !checker.eval() {
+			os.Exit(1)
+		}
 	},
 }
 
@@ -60,9 +63,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// hookCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
-	emailDomain = hookCmd.Flags().StringP("email", "e", "", "Required domain of the author")
-	bodyPattern = hookCmd.Flags().StringP("body", "b", "", "Required word in the body of the commit")
-	titleLenght = hookCmd.Flags().IntP("title-length", "l", 52, "Maximum length of the title")
-	titleCapitalized = hookCmd.Flags().BoolP("title-capitalized", "c", true, "Whether the title should be capitalized or not")
 }

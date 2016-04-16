@@ -28,6 +28,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	emailDomain      *string
+	bodyPattern      *string
+	titleLength      *int
+	titleCapitalized *bool
+)
+
 var cfgFile string
 
 // This represents the base command when called without any subcommands
@@ -67,7 +74,7 @@ func init() {
 
 	emailDomain = RootCmd.Flags().StringP("email", "e", "", "Required domain of the author")
 	bodyPattern = RootCmd.Flags().StringP("body", "b", "", "Required word in the body of the commit")
-	titleLenght = RootCmd.Flags().IntP("title-length", "l", 52, "Maximum length of the title")
+	titleLength = RootCmd.Flags().IntP("title-length", "l", 52, "Maximum length of the title")
 	titleCapitalized = RootCmd.Flags().BoolP("title-capitalized", "c", true, "Whether the title should be capitalized or not")
 }
 
