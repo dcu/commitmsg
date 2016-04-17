@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -13,6 +14,10 @@ type PackageChecker struct {
 }
 
 func (checker *PackageChecker) eval() bool {
+	if !checker.evalEmail() {
+		return false
+	}
+
 	file, err := os.Open(checker.filePath)
 	if err != nil {
 		println(err)
@@ -78,4 +83,25 @@ func (checker *PackageChecker) evalTitle(title string) bool {
 	}
 
 	return true
+}
+
+func (checker *PackageChecker) evalEmail() bool {
+	if *emailDomain == "" {
+		return true
+	}
+
+	cmd := exec.Command("git", "config", "user.email")
+	data, err := cmd.Output()
+	if err != nil {
+		fmt.Printf("Error getting user email: %s\n", err)
+		return false
+	}
+
+	email := strings.TrimSpace(string(data))
+	if strings.Contains(email, *emailDomain) {
+		return true
+	}
+
+	fmt.Printf("Email %s doesn't contain %s\n", email, *emailDomain)
+	return false
 }
