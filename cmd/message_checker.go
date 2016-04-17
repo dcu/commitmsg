@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+const (
+	minTitleLength = 5
+)
+
 type PackageChecker struct {
 	filePath            string
 	bodyPatternIncluded bool
@@ -73,6 +77,9 @@ func (checker *PackageChecker) evalTitle(title string) bool {
 
 	if len(title) > *titleLength {
 		fmt.Printf("Title is longer than %s\n", *titleLength)
+		return false
+	} else if len(title) < minTitleLength {
+		fmt.Printf("Title is too short\n")
 		return false
 	}
 
