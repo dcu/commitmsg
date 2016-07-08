@@ -109,6 +109,6 @@ func (checker *PackageChecker) evalEmail() bool {
 		return true
 	}
 
-	fmt.Printf("Email %s doesn't contain %s\n", email, *emailDomain)
+	fmt.Printf("Email `%s` doesn't contain `%s`\n", email, *emailDomain)
 	return false
 }
